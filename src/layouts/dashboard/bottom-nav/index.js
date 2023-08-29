@@ -1,28 +1,27 @@
-import React, { useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import {
+  Favorite as FavoriteIcon, Home as HomeIcon
+} from '@mui/icons-material';
 import {
   BottomNavigation,
-  BottomNavigationAction,
+  BottomNavigationAction
 } from '@mui/material';
-import {
-  Home as HomeIcon,
-  Map as MapIcon,
-  Event as EventIcon,
-  Favorite as FavoriteIcon,
-} from '@mui/icons-material';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import SvgColor from '../../../components/svg-color';
 
 export default function BottomNavigationBar() {
 
   const getMenuFromPath = (pathname) => {
     if (pathname === '/dashboard/home') return 'home';
-    if (pathname === '/dashboard/map') return 'map';
-    if (pathname === '/dashboard/calendar') return 'calendar';
+    if (pathname === '/dashboard/profile') return 'profile';
+    if (pathname === '/dashboard/filmo') return 'filmo';
     if (pathname === '/dashboard/myPage') return 'myPage';
     return 'home'; 
   };
 
   const location = useLocation();
   const [value, setValue] = useState(getMenuFromPath(location.pathname)); // 현재 선택된 메뉴 값
+  const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -42,18 +41,18 @@ export default function BottomNavigationBar() {
         to="/"
       />
       <BottomNavigationAction
-        label="Map"
-        value="map"
-        icon={<MapIcon />}
+        label="프로필"
+        value="profile"
+        icon={icon('ic_profile')}
         component={Link}
-        to="/dashboard/map"
+        to="/dashboard/profile"
       />
       <BottomNavigationAction
-        label="Calendar"
-        value="calendar"
-        icon={<EventIcon />}
+        label="작품 공고"
+        value="filmo"
+        icon={icon('ic_filmo')}
         component={Link}
-        to="/dashboard/calendar"
+        to="/dashboard/filmo"
       />
       <BottomNavigationAction
         label="MyPage"

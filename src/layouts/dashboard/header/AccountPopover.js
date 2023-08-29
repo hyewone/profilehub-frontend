@@ -72,7 +72,7 @@ export default function AccountPopover({ isLogin, userInfo }) {
     <>
 
       <IconButton
-        onClick={handleOpen}
+        onClick={isLogin && handleOpen}
         sx={{
           p: 0,
           ...(open && {

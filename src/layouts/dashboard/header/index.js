@@ -89,7 +89,7 @@ export default function Header({ openNav, onOpenNav, onCloseNav, isDesktop, isLo
         
         { isDesktop && 
           <IconButton
-          onClick={isLogin && handleNavButtonClick}
+          onClick={handleNavButtonClick}
           sx={{
             mr: 1,
             color: 'text.primary',
