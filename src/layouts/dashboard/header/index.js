@@ -58,10 +58,10 @@ Header.propTypes = {
   isDesktop: PropTypes.bool,
   isLogin: PropTypes.bool,
   userInfo: PropTypes.shape({
-    ID: PropTypes.number,
-    Email: PropTypes.string,
-    Provider: PropTypes.string,
-    UserType: PropTypes.string,
+    memberId: PropTypes.number,
+    memberEmail: PropTypes.string,
+    providerType: PropTypes.string,
+    memberType: PropTypes.string,
   }),
 };
 

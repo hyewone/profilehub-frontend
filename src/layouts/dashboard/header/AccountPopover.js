@@ -42,15 +42,15 @@ const nonAccount = {
 
 // ----------------------------------------------------------------------
 
-AccountPopover.propTypes = {
-  isLogin: PropTypes.bool,
-  userInfo: PropTypes.shape({
-    ID: PropTypes.number,
-    Email: PropTypes.string,
-    Provider: PropTypes.string,
-    UserType: PropTypes.string,
-  }),
-};
+// AccountPopover.propTypes = {
+//   isLogin: PropTypes.bool,
+//   userInfo: PropTypes.shape({
+//     ID: PropTypes.number,
+//     Email: PropTypes.string,
+//     Provider: PropTypes.string,
+//     UserType: PropTypes.string,
+//   }),
+// };
 
 export default function AccountPopover({ isLogin, userInfo }) {
   const [open, setOpen] = useState(null);
@@ -96,11 +96,11 @@ export default function AccountPopover({ isLogin, userInfo }) {
 
                 <Box sx={{ ml: 2 }}>
                   <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                    {userInfo.Email}
+                    {userInfo.memberEmail}/{userInfo.memberType}
                   </Typography>
 
                   {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {userInfo.UserType}
+                        {userInfo.memberType}
                       </Typography> */}
                 </Box>
               </StyledAccount>
