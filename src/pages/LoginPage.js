@@ -60,9 +60,6 @@ export default function LoginPage() {
     if (isLogin) {
       window.location.href = '/';
     }
-
-    console.log(isLogin);
-    console.log(userInfo);
   }, [isLogin, userInfo]);
 
   const successLogin = (data) => {

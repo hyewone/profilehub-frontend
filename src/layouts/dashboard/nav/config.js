@@ -13,7 +13,7 @@ const navConfig = [
   },
   {
     title: '프로필 보기',
-    path: '/dashboard/products',
+    path: '/dashboard/profile',
     icon: icon('ic_profile'),
   },
   {

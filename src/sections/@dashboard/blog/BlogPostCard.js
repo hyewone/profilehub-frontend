@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Link, Card, Grid, Avatar, Typography, CardContent } from '@mui/material';
@@ -52,129 +53,67 @@ const StyledCover = styled('img')({
 // ----------------------------------------------------------------------
 
 BlogPostCard.propTypes = {
-  post: PropTypes.object.isRequired,
+  // notice: PropTypes.object.isRequired,
   index: PropTypes.number,
 };
 
-export default function BlogPostCard({ post, index }) {
-  const { cover, title, filmoTitle, view, comment, share, author, createdAt, filmoType } = post;
-  // const latestPostLarge = index === 0;
-  const latestPostLarge = index === -1;
-  // const latestPost = index === 1 || index === 2;
-  const latestPost = index === -1;
+export default function BlogPostCard({ notice, index }) {
+  const { noticeId, noticeTitle, noticeContent, filmoType, filmoName, filmoRole, applyDeadlineDt, filmingStartPeriod, filmingEndPeriod } = notice || {};
 
-  const POST_INFO = [
-    { number: comment, icon: 'eva:message-circle-fill' },
-    { number: view, icon: 'eva:eye-fill' },
-    { number: share, icon: 'eva:share-fill' },
-  ];
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    console.log(noticeId)
+    navigate('/dashboard/filmoDetail', {
+      state: {
+        noticeId: `${noticeId}`
+      },
+    });
+  };
 
   return (
     // <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
     <Grid item xs={6} sm={4} md={3}>
-      <Card sx={{ position: 'relative' }}>
-        <StyledCardMedia
-          sx={{
-            ...((latestPostLarge || latestPost) && {
-              pt: 'calc(100% * 4 / 3)',
-              '&:after': {
-                top: 0,
-                content: "''",
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
-              },
-            }),
-            ...(latestPostLarge && {
-              pt: {
-                xs: 'calc(100% * 4 / 3)',
-                sm: 'calc(100% * 3 / 4.66)',
-              },
-            }),
-          }}
-        >
-          <SvgColor
-            color="paper"
-            src="/assets/icons/shape-avatar.svg"
-            sx={{
-              width: 80,
-              height: 36,
-              zIndex: 9,
-              bottom: -15,
-              position: 'absolute',
-              color: 'background.paper',
-              ...((latestPostLarge || latestPost) && { display: 'none' }),
-            }}
-          />
-          <StyledAvatar
-            alt={author.name}
-            src={author.avatarUrl}
-            sx={{
-              ...((latestPostLarge || latestPost) && {
-                zIndex: 9,
-                top: 24,
-                left: 24,
-                width: 40,
-                height: 40,
-              }),
-            }}
-          />
-
-          <StyledCover alt={filmoTitle} src={cover} />
-        </StyledCardMedia>
-
+      <Card sx={{ position: 'relative' }} onClick={() => handleCardClick()}>
         <CardContent
           sx={{
             pt: 4,
-            ...((latestPostLarge || latestPost) && {
-              bottom: 0,
-              width: '100%',
-              position: 'absolute',
-            }),
           }}
         >
+          {/* <StyledInfo>
+          </StyledInfo> */}
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}>
-              {filmoType === 'MOVIE' ? '영화' : '드라마' }
+              {filmoType === 'MOVIE' ? '영화' : '드라마'}
             </Typography>
-            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}>
-              {fDate(createdAt)}
-            </Typography>
+
+            <Box
+            // sx={{
+            //   display: 'flex',
+            //   alignItems: 'center',
+            //   ml: index === 0 ? 0 : 1.5,
+            //   // ...((latestPostLarge || latestPost) && {
+            //   //   color: 'grey.500',
+            //   // }),
+            // }}
+            >
+              <Typography variant="caption" sx={{ color: 'text.disabled' }}>123</Typography>
+              <Iconify icon="eva:heart-fill" sx={{ width: 16, height: 16, mr: 0.5, color: '#FF1493' }} />
+            </Box>
+
+            {/* <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}> */}
+            {/* {fDate(createdAt)} */}
+            {/* </Typography> */}
           </div>
 
           <StyledTitle
             color="inherit"
             variant="subtitle2"
             underline="hover"
-            sx={{
-              ...(latestPostLarge && { typography: 'h5', height: 60 }),
-              ...((latestPostLarge || latestPost) && {
-                color: 'common.white',
-              }),
-            }}
           >
-            [{filmoTitle}] {title}
+            [{filmoName}] {noticeTitle}
           </StyledTitle>
 
-          <StyledInfo>
-            {POST_INFO.map((info, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  ml: index === 0 ? 0 : 1.5,
-                  ...((latestPostLarge || latestPost) && {
-                    color: 'grey.500',
-                  }),
-                }}
-              >
-                <Iconify icon={info.icon} sx={{ width: 16, height: 16, mr: 0.5 }} />
-                <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-              </Box>
-            ))}
-          </StyledInfo>
         </CardContent>
       </Card>
     </Grid>

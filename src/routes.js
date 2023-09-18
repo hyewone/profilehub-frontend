@@ -10,8 +10,16 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import HomePage from './pages/HomePage';
+
 import ProfilePage from './pages/ProfilePage';
+import ProfileDetailPage from './pages/ProfileDetailPage';
+import ProfileInsertPage from './pages/ProfileInsertPage';
+
 import FilmoPage from './pages/FilmoPage';
+import FilmoDetailPage from './pages/FilmoDetailPage';
+import FilmoInsertPage from './pages/FilmoInsertPage';
+
+import MyPage from './pages/MyPage';
 
 // ----------------------------------------------------------------------
 
@@ -23,8 +31,17 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/home" />, index: true },
         { path: 'home', element: <HomePage /> },
+
         { path: 'profile', element: <ProfilePage /> },
+        { path: 'profileDetail', element: <ProfileDetailPage /> },
+        { path: 'profileInsert', element: <ProfileInsertPage /> },
+
         { path: 'filmo', element: <FilmoPage /> },
+        { path: 'filmoDetail', element: <FilmoDetailPage /> },
+        { path: 'filmoInsert', element: <FilmoInsertPage /> },
+
+        { path: 'myPage', element: <MyPage /> },
+        
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },

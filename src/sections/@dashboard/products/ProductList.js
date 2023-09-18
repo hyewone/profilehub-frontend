@@ -6,17 +6,19 @@ import ShopProductCard from './ProductCard';
 // ----------------------------------------------------------------------
 
 ProductList.propTypes = {
-  products: PropTypes.array.isRequired,
+  // profiles: PropTypes.array.isRequired,
 };
 
-export default function ProductList({ products, ...other }) {
+export default function ProductList({ profiles, ...other }) {
   return (
     <Grid container spacing={3} {...other}>
-      {products.map((product) => (
-        <Grid key={product.id} item xs={6} sm={4} md={3}>
-          <ShopProductCard product={product} />
-        </Grid>
-      ))}
+      {profiles &&
+        profiles.map((profile) => (
+          <Grid key={profile.id} item xs={6} sm={4} md={3}>
+            <ShopProductCard profile={profile} />
+          </Grid>
+        ))
+      }
     </Grid>
   );
 }
