@@ -7,12 +7,13 @@ import {
 } from '@mui/icons-material';
 // @mui
 import { Box, Button, Container, Grid, TextField, Typography, MenuItem, Switch, Card, CardMedia, Select, Stack, IconButton } from '@mui/material';
-
+import axios from 'axios';
 import api from '../api'
+import { getTokenToSessionStorage } from '../reducer/loginComm';
 
 // ----------------------------------------------------------------------
 
-export default function FilmoDetailPage() {
+export default function FilmoDetailPage({ openChatRoom, setIsChatRoomOpen, openChat, setIsChatOpen, chatRoomInfo, setChatRoomInfo }) {
 
   const initalNotice = {
     noticeTitle: '',
@@ -23,6 +24,7 @@ export default function FilmoDetailPage() {
     applyDeadlineDt: '',
     filmingStartPeriod: '',
     filmingEndPeriod: '',
+    memberInfo: {},
   }
 
   const [noticeDetail, setNoticeDetail] = useState(initalNotice);
@@ -70,11 +72,27 @@ export default function FilmoDetailPage() {
         likeType: "NOTICE",
         targetId: `${noticeId}`
       };
-      const response = await api.post(`/v1/like`, null, { params: data } );
+      const response = await api.post(`/v1/like`, null, { params: data });
       if (response.data.status === "SUCCESS") {
         setLikeId(response.data.data)
       }
     }
+  }
+
+  const handleSendChat = async () => {
+    const token = getTokenToSessionStorage();
+    const roomData = {
+      attendeeIdList: [noticeDetail.memberInfo.memberId],
+      title: `[배우]${userInfo.profileInfo.actorName} -> [프로듀서]${noticeDetail.memberInfo.memberEmail}`
+    }
+
+    const response = await axios.post(`http://localhost:7003/v1/chat/room?token=${token}`, roomData);
+    console.log('채팅방 생성', response.data);
+
+    if (response.status === 200) {
+      setChatRoomInfo(response.data);
+    }
+    setIsChatOpen(true)
   }
 
   return (
@@ -97,13 +115,17 @@ export default function FilmoDetailPage() {
 
           <Grid item xs={12}>
             <Box display="flex" alignItems="center" justifyContent="flex-end" gap={1}>
-              <Button variant="contained" startIcon={<Send />}>
-                채팅 보내기
-              </Button>
-              <Button variant="outlined" startIcon={likeId > 0 ? <Favorite sx={{ color: '#FF1493' }}/> : <FavoriteBorder sx={{ color: 'pink' }}/>}
-                sx={{ borderColor: '#FF1493', color: '#FF1493' }} onClick={handleLike}>
-                좋아요
-              </Button>
+              {userInfo.memberType === "ACTOR" &&
+                <Button variant="contained" startIcon={<Send />} onClick={handleSendChat}>
+                  채팅 보내기
+                </Button>
+              }
+              {noticeDetail.memberInfo.memberId !== userInfo.memberId &&
+                <Button variant="outlined" startIcon={likeId > 0 ? <Favorite sx={{ color: '#FF1493' }} /> : <FavoriteBorder sx={{ color: 'pink' }} />}
+                  sx={{ borderColor: '#FF1493', color: '#FF1493' }} onClick={handleLike}>
+                  좋아요
+                </Button>
+              }
             </Box>
           </Grid>
 
@@ -193,17 +215,21 @@ export default function FilmoDetailPage() {
         </Grid>
         <Box mt={2} display="flex" alignItems="center" justifyContent="center" gap={1}>
           {/* {userInfo.memberId == noticeDetail} */}
-          <Button variant="outlined" component={RouterLink} to="/dashboard/filmo">
-            수정
-          </Button>
+
+          {userInfo.memberType === "ACTOR" &&
+            <Button variant="contained">
+              지원하기
+            </Button>
+          }
+          {noticeDetail.memberInfo.memberId === userInfo.memberId &&
+            <Button variant="outlined" component={RouterLink} to="/dashboard/filmo">
+              수정
+            </Button>
+          }
           <Button variant="contained" component={RouterLink} to="/dashboard/filmo">
             목록
           </Button>
-        </Box>
-        <Box mt={2} display="flex" alignItems="center" justifyContent="center">
-          <Button variant="contained">
-            지원하기
-          </Button>
+
         </Box>
       </Container>
     </>

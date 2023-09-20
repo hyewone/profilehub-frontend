@@ -1,6 +1,7 @@
 import { Box, Divider, IconButton, Link, MenuItem, Popover, Stack, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
@@ -11,10 +12,10 @@ const MENU_OPTIONS = [
     label: 'Home',
     icon: 'eva:home-fill',
   },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
+  // {
+  //   label: 'Profile',
+  //   icon: 'eva:person-fill',
+  // },
   {
     label: 'Settings',
     icon: 'eva:settings-2-fill',
@@ -54,6 +55,7 @@ const nonAccount = {
 
 export default function AccountPopover({ isLogin, userInfo }) {
   const [open, setOpen] = useState(null);
+  const isLoginDispatch = useDispatch();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -64,8 +66,8 @@ export default function AccountPopover({ isLogin, userInfo }) {
   };
 
   const handleLogout = () => {
+    isLoginDispatch({ type: 'isNonLogin' });
     handleClose()
-
   };
 
   return (
@@ -185,7 +187,7 @@ export default function AccountPopover({ isLogin, userInfo }) {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </Popover>

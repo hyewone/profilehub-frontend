@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -8,19 +8,20 @@ import ScrollToTop from './components/scroll-to-top';
 import { getTokenToSessionStorage, getUserInfoToSessionStorage } from './reducer/loginComm';
 // routes
 import Router from './routes';
-import { ProductCartWidget } from './sections/@dashboard/products';
+// import { ProductCartWidget } from './sections/@dashboard/products';
 // theme
 import ThemeProvider from './theme';
 
-
-
-
-
+import { ProductCartWidget } from './sections/@dashboard/products'
 
 // ----------------------------------------------------------------------
 
 export default function App() {
   const isLoginDispatch = useDispatch();
+  const [isChatRoomOpen, setIsChatRoomOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatRoomInfo, setChatRoomInfo] = useState({});
+
 
   useEffect(() => {
     const token = getTokenToSessionStorage();
@@ -37,10 +38,10 @@ export default function App() {
       <BrowserRouter>
         <ThemeProvider>
           
-          <ProductCartWidget />
           <ScrollToTop />
           <StyledChart />
-          <Router />
+          <Router openChatRoom={isChatRoomOpen} setIsChatRoomOpen={setIsChatRoomOpen} openChat={isChatOpen} setIsChatOpen={setIsChatOpen} chatRoomInfo={chatRoomInfo} setChatRoomInfo={setChatRoomInfo}/>
+          <ProductCartWidget openChatRoom={isChatRoomOpen} setIsChatRoomOpen={setIsChatRoomOpen} openChat={isChatOpen} setIsChatOpen={setIsChatOpen} chatRoomInfo={chatRoomInfo} setChatRoomInfo={setChatRoomInfo}/>
 
         </ThemeProvider>
       </BrowserRouter>

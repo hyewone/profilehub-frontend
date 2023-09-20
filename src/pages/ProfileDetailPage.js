@@ -1,20 +1,20 @@
-import { Helmet } from 'react-helmet-async';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import ReactPlayer from 'react-player';
 import {
   Favorite, FavoriteBorder, Send
 } from '@mui/icons-material';
 // @mui
-import { Box, Button, Container, Grid, TextField, Typography, MenuItem, Switch, Card, CardMedia, Select, Stack, Link } from '@mui/material';
-
-import api from '../api'
-
+import { Box, Button, Card, Container, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import ReactPlayer from 'react-player';
+import { useSelector } from 'react-redux';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import api from '../api';
+import { getTokenToSessionStorage } from '../reducer/loginComm';
 
 // ----------------------------------------------------------------------
 
-export default function ProfileDetailPage() {
+export default function ProfileDetailPage({ openChatRoom, setIsChatRoomOpen, openChat, setIsChatOpen, chatRoomInfo, setChatRoomInfo }) {
 
   const initailProfile = {
     actorName: '',
@@ -25,6 +25,7 @@ export default function ProfileDetailPage() {
     videos: [],
     filmos: [],
     links: [],
+    memberInfo: {},
   }
 
   const [profileDetail, setProfileDetail] = useState(initailProfile);
@@ -73,11 +74,27 @@ export default function ProfileDetailPage() {
         likeType: "PROFILE",
         targetId: `${profileId}`
       };
-      const response = await api.post(`/v1/like`, null, { params: data } );
+      const response = await api.post(`/v1/like`, null, { params: data });
       if (response.data.status === "SUCCESS") {
         setLikeId(response.data.data)
       }
     }
+  }
+
+  const handleSendChat = async () => {
+    const token = getTokenToSessionStorage();
+    const roomData = {
+      attendeeIdList: [ profileDetail.memberInfo.memberId ],
+      title: `[프로듀서]${userInfo.memberEmail} -> [배우]${profileDetail.actorName}`
+    }
+
+    const response = await axios.post(`http://localhost:7003/v1/chat/room?token=${token}`, roomData);
+    console.log('채팅방 생성', response.data);
+
+    if (response.status === 200) {
+      setChatRoomInfo(response.data);
+    }
+    setIsChatOpen(true)
   }
 
   const handleOpenFilter = () => {
@@ -117,13 +134,17 @@ export default function ProfileDetailPage() {
 
           <Grid item xs={12}>
             <Box display="flex" alignItems="center" justifyContent="flex-end" gap={1}>
-              <Button variant="contained" startIcon={<Send />}>
-                채팅 보내기
-              </Button>
-              <Button variant="outlined" startIcon={likeId > 0 ? <Favorite sx={{ color: '#FF1493' }} /> : <FavoriteBorder sx={{ color: 'pink' }} />}
-                sx={{ borderColor: '#FF1493', color: '#FF1493' }} onClick={handleLike}>
-                좋아요
-              </Button>
+              {userInfo.memberType === "PRODUCER" &&
+                <Button variant="contained" startIcon={<Send />} onClick={handleSendChat}>
+                  채팅 보내기
+                </Button>
+              }
+              {profileDetail.memberInfo.memberId !== userInfo.memberId &&
+                <Button variant="outlined" startIcon={likeId > 0 ? <Favorite sx={{ color: '#FF1493' }} /> : <FavoriteBorder sx={{ color: 'pink' }} />}
+                  sx={{ borderColor: '#FF1493', color: '#FF1493' }} onClick={handleLike}>
+                  좋아요
+                </Button>
+              }
             </Box>
           </Grid>
           <Grid item xs={12}>
@@ -281,9 +302,11 @@ export default function ProfileDetailPage() {
           }
         </Grid>
         <Box mt={2} display="flex" alignItems="center" justifyContent="center" gap={1}>
-          <Button variant="outlined" component={RouterLink} to="/dashboard/profile">
-            수정
-          </Button>
+          {profileDetail.memberInfo.memberId === userInfo.memberId &&
+            <Button variant="outlined" component={RouterLink} to="/dashboard/profile">
+              수정
+            </Button>
+          }
           <Button variant="contained" component={RouterLink} to="/dashboard/profile">
             목록
           </Button>

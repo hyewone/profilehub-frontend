@@ -76,7 +76,7 @@ export default function ProfilePage() {
         </Stack> */}
 
         <ProductList profiles={profileList} />
-        <ProductCartWidget />
+        {/* <ProductCartWidget /> */}
       </Container>
     </>
   );

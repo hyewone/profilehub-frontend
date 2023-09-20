@@ -63,7 +63,6 @@ export default function BlogPostCard({ notice, index }) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    console.log(noticeId)
     navigate('/dashboard/filmoDetail', {
       state: {
         noticeId: `${noticeId}`

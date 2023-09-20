@@ -67,7 +67,7 @@ export default function DashboardLayout() {
       <Nav isLogin={isLogin} userInfo={userInfo} isDesktop={isDesktop} openNav={open} onCloseNav={() => setOpen(false)} onOpenNav={() => setOpen(true)}/>
       
       <Main open={open}>
-        <Outlet />
+        <Outlet/>
       </Main>
 
       { !isDesktop && 

@@ -23,7 +23,7 @@ import MyPage from './pages/MyPage';
 
 // ----------------------------------------------------------------------
 
-export default function Router() {
+export default function Router({ openChatRoom, setIsChatRoomOpen, openChat, setIsChatOpen, chatRoomInfo, setChatRoomInfo}) {
   const routes = useRoutes([
     {
       path: '/dashboard',
@@ -33,11 +33,11 @@ export default function Router() {
         { path: 'home', element: <HomePage /> },
 
         { path: 'profile', element: <ProfilePage /> },
-        { path: 'profileDetail', element: <ProfileDetailPage /> },
+        { path: 'profileDetail', element: <ProfileDetailPage openChatRoom={openChatRoom} setIsChatRoomOpen={setIsChatRoomOpen} openChat={openChat} setIsChatOpen={setIsChatOpen}  chatRoomInfo={chatRoomInfo} setChatRoomInfo={setChatRoomInfo}/> },
         { path: 'profileInsert', element: <ProfileInsertPage /> },
 
         { path: 'filmo', element: <FilmoPage /> },
-        { path: 'filmoDetail', element: <FilmoDetailPage /> },
+        { path: 'filmoDetail', element: <FilmoDetailPage openChatRoom={openChatRoom} setIsChatRoomOpen={setIsChatRoomOpen} openChat={openChat} setIsChatOpen={setIsChatOpen}  chatRoomInfo={chatRoomInfo} setChatRoomInfo={setChatRoomInfo}/> },
         { path: 'filmoInsert', element: <FilmoInsertPage /> },
 
         { path: 'myPage', element: <MyPage /> },
