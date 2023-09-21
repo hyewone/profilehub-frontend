@@ -51,6 +51,7 @@ export default function DashboardLayout() {
   const {isLogin, userInfo} = useSelector((state) => state);
 
   const location = useLocation();
+  
   useEffect(() => {
     setOpen(false);
   }, [location]);

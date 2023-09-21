@@ -22,6 +22,7 @@ export default function ShopProductSort() {
 
   const handleClose = () => {
     setOpen(null);
+    
   };
 
   return (

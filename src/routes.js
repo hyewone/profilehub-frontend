@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes, useNavigate } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
@@ -24,6 +24,7 @@ import MyPage from './pages/MyPage';
 // ----------------------------------------------------------------------
 
 export default function Router({ openChatRoom, setIsChatRoomOpen, openChat, setIsChatOpen, chatRoomInfo, setChatRoomInfo}) {
+
   const routes = useRoutes([
     {
       path: '/dashboard',

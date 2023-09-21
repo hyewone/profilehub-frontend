@@ -3,224 +3,59 @@ import {
 } from '@mui/material';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
+import api from '../api'
 // sections
 import {
   AppWidgetSummary
 } from '../sections/@dashboard/app';
 import { BlogPostCard } from '../sections/@dashboard/blog';
 import { ProductList } from '../sections/@dashboard/products';
-// mock
-import POSTS from '../_mock/blog';
-import PRODUCTS from '../_mock/products';
-
-
-
-
-// ----------------------------------------------------------------------
-
-
-const TABLE_HEAD = [
-  { id: 'CinemaType', label: '시네마', alignRight: false },
-  { id: 'company', label: '영화이름', alignRight: false },
-  { id: 't', label: '상영극장', alignRight: false },
-  { id: 'isVerified', label: '상영일자', alignRight: false },
-  { id: 'status', label: '상영시간', alignRight: false },
-  { id: 'attende', label: '참석자', alignRight: false },
-  { id: 'attende2', label: '예매하기', alignRight: false },
-];
-
-// ----------------------------------------------------------------------
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-  }
-  return stabilizedThis.map((el) => el[0]);
-}
 
 // ----------------------------------------------------------------------
 
 export default function HomePage() {
-  const apiUrl = process.env.REACT_APP_API_URL
 
-  const theme = useTheme();
+  const { isLogin, userInfo } = useSelector((state) => state);
 
-  const [sgList, setSgList] = useState([]);                     // 무대인사
-  const [megaboxSgUrlList, setMegaboxSgUrlList] = useState([]); // 메가박스 무대인사 URL
-  const [lotteSgUrlList, setLotteSgUrlList] = useState([]);     // 롯데시네마 무대인사 URL
-  const [cgvSgUrlList, setCgvSgUrlList] = useState([]);         // CGV 무대인사 URL
-
-  const getApiUrl = (request) => {
-    return apiUrl + request
-  }
+  const [profileList, setProfileList] = useState([]);
+  const [noticeList, setNoticeList] = useState([]);
 
   const fetchAllData = async () => {
-    fetchSgList()
-    fetchMegaboxSgUrlList()
-    fetchLotteSgUrlList()
-    fetchCgvSgUrlList()
+    getProfiles();
+    getNotices();
   }
 
-  // API 호출 함수 정의
-
-  const fetchSgList = async () => {
+  const getProfiles = async () => {
     try {
-      const response = await axios.get(getApiUrl('/api/v1/stageGreetings'));
-      let data = response.data.stageGreetings
-      data = data == null ? [] : data
-      setSgList(data);
-    } catch (error) {
-      console.error('Error fetching stageGreetings:', error);
+      const response = await api.get("/v1/profile/profiles?limit=4&sortKey=createDt");
+      const profiles = response.data.data.profileList;
+      setProfileList(profiles);
+    } catch (e) {
+      setProfileList([]);
     }
   };
 
-  const fetchMegaboxSgUrlList = async () => {
+  const getNotices = async () => {
     try {
-      const response = await axios.get(getApiUrl('/api/v1/stageGreetingUrls?cinemaType=MEGABOX'));
-      let data = response.data.stageGreetingUrls
-      data = data == null ? [] : data
-      setMegaboxSgUrlList(data);
-    } catch (error) {
-      console.error('Error fetching megebox stageGreetingUrls:', error);
+      const response = await api.get("/v1/notice/notices?limit=8&sortKey=createDt");
+      const notices = response.data.data.noticeList;
+      setNoticeList(notices);
+    } catch (e) {
+      setNoticeList([]);
     }
-  };
-
-  const fetchLotteSgUrlList = async () => {
-    try {
-      const response = await axios.get(getApiUrl('/api/v1/stageGreetingUrls?cinemaType=LOTTECINEMA'));
-      let data = response.data.stageGreetingUrls
-      data = data == null ? [] : data
-      setLotteSgUrlList(data);
-    } catch (error) {
-      console.error('Error fetching lottecinema stageGreetingUrls:', error);
-    }
-  };
-
-  const fetchCgvSgUrlList = async () => {
-    try {
-      const response = await axios.get(getApiUrl('/api/v1/stageGreetingUrls?cinemaType=CGV'));
-      let data = response.data.stageGreetingUrls
-      data = data == null ? [] : data
-      setCgvSgUrlList(data);
-    } catch (error) {
-      console.error('Error fetching cgv stageGreetingUrls:', error);
-    }
-  };
-
-  // ----------------------------------------------------------------------
-
-  const [open, setOpen] = useState(null);
-
-  const [page, setPage] = useState(0);
-
-  const [order, setOrder] = useState('asc');
-
-  const [selected, setSelected] = useState([]);
-
-  const [orderBy, setOrderBy] = useState('name');
-
-  const [filterName, setFilterName] = useState('');
-
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = sgList.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setPage(0);
-    setRowsPerPage(parseInt(event.target.value, 10));
-  };
-
-  const handleFilterByName = (event) => {
-    setPage(0);
-    setFilterName(event.target.value);
-  };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sgList.length) : 0;
-
-  const filteredUsers = applySortFilter(sgList, getComparator(order, orderBy), filterName);
-
-  const isNotFound = !filteredUsers.length && !!filterName;
-
+  }
 
   // ----------------------------------------------------------------------
 
   useEffect(() => {
     fetchAllData()
   }, []);
-
-  useEffect(() => {
-    // console.log(sgList)
-    // console.log(megaboxSgUrlList)
-    // console.log(lotteSgUrlList)
-    // console.log(cgvSgUrlList)
-  }, [sgList, megaboxSgUrlList, lotteSgUrlList, cgvSgUrlList]);
 
 
   // ----------------------------------------------------------------------
@@ -242,26 +77,23 @@ export default function HomePage() {
                 <CardHeader title="프로필 관리 이제는 ProfileHub" subheader="" />
                 <Box sx={{ p: 4, pb: 1 }} dir="ltr">
                   <Grid container spacing={1}>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Link to="/dashboard/map" component={RouterLink} sx={{ display: 'contents' }}>
-                        <AppWidgetSummary title="프로필 조회" total={714000} icon="search" />
+                    <Grid item xs={!isLogin ? 6 : 4} sm={!isLogin ? 6 : 4} md={!isLogin ? 6 : 4}>
+                      <Link to="/dashboard/profile" component={RouterLink} sx={{ display: 'contents' }}>
+                        <AppWidgetSummary title="프로필 조회" total={714000} icon="profile" />
                       </Link>
                     </Grid>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Link to="/dashboard/map" component={RouterLink} sx={{ display: 'contents' }}>
-                        <AppWidgetSummary title="작품공고 조회" total={1352831} color="secondary" icon="map" />
+                    <Grid item xs={!isLogin ? 6 : 4} sm={!isLogin ? 6 : 4} md={!isLogin ? 6 : 4}>
+                      <Link to="/dashboard/filmo" component={RouterLink} sx={{ display: 'contents' }}>
+                        <AppWidgetSummary title="작품공고 조회" total={1352831} color="secondary" icon="filmo" />
                       </Link>
                     </Grid>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Link to="/dashboard/calendar" component={RouterLink} sx={{ display: 'contents' }}>
-                        <AppWidgetSummary title="캘린더로 보기" total={1723315} color="info" icon="calendar" />
-                      </Link>
-                    </Grid>
-                    <Grid item xs={6} sm={6} md={3}>
-                      <Link to="/dashboard/myPage" component={RouterLink} sx={{ display: 'contents' }}>
-                        <AppWidgetSummary title="마이 페이지" total={234} color="error" icon="favorite" />
-                      </Link>
-                    </Grid>
+                    {isLogin &&
+                      <Grid item xs={4} sm={4} md={4}>
+                        <Link to="/dashboard/myPage" component={RouterLink} sx={{ display: 'contents' }}>
+                          <AppWidgetSummary title="마이 페이지" total={234} color="error" icon="favorite" />
+                        </Link>
+                      </Grid>
+                    }
                   </Grid>
                 </Box>
                 <CardHeader />
@@ -272,9 +104,19 @@ export default function HomePage() {
           <Grid item xs={12} md={12} lg={12}>
             <Container>
               <Card>
-                <CardHeader title="최신 프로필" subheader="" />
+                <CardHeader title="최신 프로필"
+                  action={
+                    <Link to="/dashboard/profile" component={RouterLink}
+                      style={{
+                        fontSize: '13px',
+                        textDecoration: 'none',
+                        color: 'black',
+                        marginRight: '10px',
+                      }}
+                    >더 보기</Link>
+                  } />
                 <Box sx={{ p: 3, pb: 1 }} dir="ltr">
-                  <ProductList products={PRODUCTS.slice(0, 4)} />
+                  <ProductList profiles={profileList} />
                 </Box>
                 <CardHeader />
               </Card>
@@ -285,11 +127,21 @@ export default function HomePage() {
 
             <Container>
               <Card>
-                <CardHeader title="최신 작품 공고" subheader="" />
+                <CardHeader title="최신 작품 공고"
+                  action={
+                    <Link to="/dashboard/filmo" component={RouterLink}
+                      style={{
+                        fontSize: '13px',
+                        textDecoration: 'none',
+                        color: 'black',
+                        marginRight: '10px',
+                      }}
+                    >더 보기</Link>
+                  } />
                 <Box sx={{ p: 3, pb: 1 }} dir="ltr">
                   <Grid container spacing={3}>
-                    {POSTS.slice(0, 4).map((post, index) => (
-                      <BlogPostCard key={post.id} post={post} index={index} />
+                    {noticeList.map((notice, index) => (
+                      <BlogPostCard key={notice.noticeId} notice={notice} index={index} />
                     ))}
                   </Grid>
                 </Box>

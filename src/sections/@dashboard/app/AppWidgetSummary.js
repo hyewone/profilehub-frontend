@@ -1,13 +1,13 @@
-// @mui
+import React from 'react';
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
-// utils
-import { fShortenNumber } from '../../../utils/formatNumber';
-// components
-import Iconify from '../../../components/iconify';
-
-// ----------------------------------------------------------------------
+import SearchIcon from '@mui/icons-material/Search';
+import MapIcon from '@mui/icons-material/Map';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import MovieIcon from '@mui/icons-material/Movie';
 
 const StyledIcon = styled('div')(({ theme }) => ({
   margin: 'auto',
@@ -20,21 +20,45 @@ const StyledIcon = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-// ----------------------------------------------------------------------
-
 AppWidgetSummary.propTypes = {
   color: PropTypes.string,
-  icon: PropTypes.string,
+  icon: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   total: PropTypes.number.isRequired,
   sx: PropTypes.object,
 };
 
 export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, ...other }) {
+  let IconComponent;
+
+  switch (icon) {
+    case 'profile':
+      IconComponent = <AssignmentIndIcon />;
+      break;
+    case 'filmo':
+      IconComponent = <MovieIcon />;
+      break;
+    case 'search':
+      IconComponent = <SearchIcon />;
+      break;
+    case 'map':
+      IconComponent = <MapIcon />;
+      break;
+    case 'calendar':
+      IconComponent = <CalendarTodayIcon />;
+      break;
+    case 'favorite':
+      IconComponent = <FavoriteIcon />;
+      break;
+    default:
+      IconComponent = null;
+  }
+
   return (
     <Card
       sx={{
         py: 5,
+        width: '100%',
         boxShadow: 0,
         textAlign: 'center',
         color: (theme) => theme.palette[color].darker,
@@ -53,10 +77,9 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
             )} 100%)`,
         }}
       >
-        <Iconify icon={icon} width={24} height={24} />
+        {IconComponent}
       </StyledIcon>
 
-      {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
       <Typography variant="h4">{title}</Typography>
 
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>

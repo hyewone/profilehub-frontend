@@ -264,10 +264,10 @@ export default function CartWidget({ openChatRoom, setIsChatRoomOpen, openChat, 
   return (
     <>
       <Box>
-        <StyledRoot onClick={openModal}>
-          <Badge showZero badgeContent={0} color="error" max={99}>
+        <StyledRoot onClick={openModal} >
+          {/* <Badge color="error" max={99}> showZero badgeContent={0} */}
             <Iconify icon="eva:message-square-outline" width={24} height={24} />
-          </Badge>
+          {/* </Badge> */}
         </StyledRoot>
 
         <Popover

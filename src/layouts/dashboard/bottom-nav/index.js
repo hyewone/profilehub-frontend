@@ -5,23 +5,29 @@ import {
   BottomNavigation,
   BottomNavigationAction
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import SvgColor from '../../../components/svg-color';
 
 export default function BottomNavigationBar() {
+  const { isLogin, userInfo } = useSelector((state) => state);
 
   const getMenuFromPath = (pathname) => {
     if (pathname === '/dashboard/home') return 'home';
     if (pathname === '/dashboard/profile') return 'profile';
     if (pathname === '/dashboard/filmo') return 'filmo';
     if (pathname === '/dashboard/myPage') return 'myPage';
-    return 'home'; 
+    return 'home';
   };
 
   const location = useLocation();
   const [value, setValue] = useState(getMenuFromPath(location.pathname)); // 현재 선택된 메뉴 값
   const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
+
+  useEffect(() => {
+    setValue(getMenuFromPath(location.pathname))
+  }, [location])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -29,7 +35,7 @@ export default function BottomNavigationBar() {
 
   return (
     <BottomNavigation
-      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: '0.7px solid rgba(0, 0, 0, 0.2)'}}
+      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: '0.7px solid rgba(0, 0, 0, 0.2)' }}
       value={value}
       onChange={handleChange}
     >
@@ -54,13 +60,15 @@ export default function BottomNavigationBar() {
         component={Link}
         to="/dashboard/filmo"
       />
-      <BottomNavigationAction
-        label="MyPage"
-        value="myPage"
-        icon={<FavoriteIcon />}
-        component={Link}
-        to="/dashboard/myPage"
-      />
+      {isLogin &&
+        <BottomNavigationAction
+          label="MyPage"
+          value="myPage"
+          icon={<FavoriteIcon />}
+          component={Link}
+          to="/dashboard/myPage"
+        />
+      }
     </BottomNavigation>
   );
 }

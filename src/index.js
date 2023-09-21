@@ -19,10 +19,10 @@ const store = createStore(loginReducer);
 
 root.render(
     <Provider store={store}>
-         {/* <React.StrictMode>  */}
-            <meta name="viewport" content="initial-scale=1, viewport-fit=cover" />
-            <App />
-         {/* </React.StrictMode>,  */}
+        {/* <React.StrictMode>  */}
+        <meta name="viewport" content="initial-scale=1, viewport-fit=cover" />
+        <App />
+        {/* </React.StrictMode>,  */}
     </Provider>
 );
 

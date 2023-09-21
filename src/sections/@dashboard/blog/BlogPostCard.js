@@ -58,7 +58,7 @@ BlogPostCard.propTypes = {
 };
 
 export default function BlogPostCard({ notice, index }) {
-  const { noticeId, noticeTitle, noticeContent, filmoType, filmoName, filmoRole, applyDeadlineDt, filmingStartPeriod, filmingEndPeriod } = notice || {};
+  const { noticeId, noticeTitle, noticeContent, filmoType, filmoName, filmoRole, applyDeadlineDt, filmingStartPeriod, filmingEndPeriod, likeCount } = notice || {};
 
   const navigate = useNavigate();
 
@@ -96,7 +96,7 @@ export default function BlogPostCard({ notice, index }) {
             //   // }),
             // }}
             >
-              <Typography variant="caption" sx={{ color: 'text.disabled' }}>123</Typography>
+              <Typography variant="caption" sx={{ color: 'text.disabled' }}>{likeCount}</Typography>
               <Iconify icon="eva:heart-fill" sx={{ width: 16, height: 16, mr: 0.5, color: '#FF1493' }} />
             </Box>
 

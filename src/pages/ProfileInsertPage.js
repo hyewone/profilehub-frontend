@@ -1,7 +1,9 @@
 // @mui
-import { Box, Button, Container, Grid, TextField, Typography, MenuItem, Switch, Card, CardMedia, Select, Stack } from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Button, Container, Grid, TextField, Typography, MenuItem, Switch, Card, CardMedia, Select, Stack, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 // components
 import Iconify from '../components/iconify';
 
@@ -10,7 +12,23 @@ import Iconify from '../components/iconify';
 
 export default function ProfilePage() {
 
-  // const [openFilter, setOpenFilter] = useState(false);
+  const { isLogin, userInfo } = useSelector((state) => state);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupInfo, setPopupInfo] = useState({title: '접근 실패', content: '로그인 후 이용이 가능한 페이지입니다.', button: '로그인 하기', redirect: '/login'});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLogin) {
+      setPopupOpen(true);
+    }else if(userInfo.memberType === "ACTOR"){
+      setPopupInfo({title: '접근 실패', content: '배우만 프로필 작성이 가능합니다.', button: '확인', redirect: '/'})
+      setPopupOpen(true);
+    }
+  }, []);
+
+  const handlePopupClose = () => {
+    navigate(`${popupInfo.redirect}`)
+  };
 
   const [formData, setFormData] = useState({
     actorName: '',
@@ -360,6 +378,24 @@ export default function ProfilePage() {
           </Box>
         </form>
       </Container>
+      <Dialog
+        open={popupOpen}
+        onClose={handlePopupClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {popupInfo.title}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {popupInfo.content}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePopupClose}>{popupInfo.button}</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

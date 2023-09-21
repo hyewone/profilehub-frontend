@@ -21,12 +21,11 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ profile }) {
-  const { profileId, actorName, title, content, defaultImageId, ynType, images, createDt } = profile;
+  const { profileId, actorName, title, content, defaultImageId, ynType, images, createDt, likeCount } = profile;
 
   const navigate = useNavigate();
 
   const handleCardClick = (profileId) => {
-    console.log(profileId)
     navigate('/dashboard/profileDetail', {
       state: {
         profileId: `${profileId}`
@@ -81,7 +80,7 @@ export default function ShopProductCard({ profile }) {
             // }}
             >
               <Iconify icon="eva:heart-fill" sx={{ width: 16, height: 16, mr: 0.5, color: '#FF1493' }} />
-              <Typography variant="caption" sx={{ color: 'text.disabled' }}>123</Typography>
+              <Typography variant="caption" sx={{ color: 'text.disabled' }}>{likeCount}</Typography>
             </Box>
           </Typography>
           <Typography variant="subtitle1">

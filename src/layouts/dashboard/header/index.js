@@ -119,11 +119,11 @@ export default function Header({ openNav, onOpenNav, onCloseNav, isDesktop, isLo
           {/* <Logo /> */}
           
           <Searchbar />
-            {isLogin ? (
+            {/* {isLogin ? (
               <NotificationsPopover />
             ) : (
               <Drawer />
-            )}
+            )} */}
           <AccountPopover isLogin={isLogin} userInfo={userInfo}/>
         </Stack>
       </StyledToolbar>

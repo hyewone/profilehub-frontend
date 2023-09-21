@@ -2,12 +2,12 @@ import {
   Favorite, FavoriteBorder, Send
 } from '@mui/icons-material';
 // @mui
-import { Box, Button, Card, Container, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, Container, Grid, MenuItem, Select, Stack, TextField, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import ReactPlayer from 'react-player';
 import { useSelector } from 'react-redux';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import api from '../api';
 import { getTokenToSessionStorage } from '../reducer/loginComm';
@@ -35,11 +35,22 @@ export default function ProfileDetailPage({ openChatRoom, setIsChatRoomOpen, ope
   const profileId = location.state.profileId;
   const [openFilter, setOpenFilter] = useState(false);
   const { isLogin, userInfo } = useSelector((state) => state);
-
+  const [popupOpen, setPopupOpen] = useState(false);
+  
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    getProfile();
-    getLike();
+    if (!isLogin) {
+      setPopupOpen(true);
+    }else{
+      getProfile();
+      getLike();
+    }
   }, [profileId]);
+
+  const handlePopupClose = () => {
+    navigate('/login')
+  };
 
   const getProfile = async () => {
     try {
@@ -84,7 +95,7 @@ export default function ProfileDetailPage({ openChatRoom, setIsChatRoomOpen, ope
   const handleSendChat = async () => {
     const token = getTokenToSessionStorage();
     const roomData = {
-      attendeeIdList: [ profileDetail.memberInfo.memberId ],
+      attendeeIdList: [profileDetail.memberInfo.memberId],
       title: `[프로듀서]${userInfo.memberEmail} -> [배우]${profileDetail.actorName}`
     }
 
@@ -312,6 +323,24 @@ export default function ProfileDetailPage({ openChatRoom, setIsChatRoomOpen, ope
           </Button>
         </Box>
       </Container>
+      <Dialog
+        open={popupOpen}
+        onClose={handlePopupClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          접근 실패
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            로그인 후 이용이 가능한 페이지입니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePopupClose}>로그인 하기</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 

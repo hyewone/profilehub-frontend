@@ -1,12 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { useLocation, Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Favorite, FavoriteBorder, Send
 } from '@mui/icons-material';
 // @mui
-import { Box, Button, Container, Grid, TextField, Typography, MenuItem, Switch, Card, CardMedia, Select, Stack, IconButton } from '@mui/material';
+import { Box, Button, Container, Grid, TextField, Typography, MenuItem, Switch, Card, CardMedia, Select, Stack, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import axios from 'axios';
 import api from '../api'
 import { getTokenToSessionStorage } from '../reducer/loginComm';
@@ -33,11 +33,22 @@ export default function FilmoDetailPage({ openChatRoom, setIsChatRoomOpen, openC
   const location = useLocation();
   const noticeId = location.state.noticeId;
   const { isLogin, userInfo } = useSelector((state) => state);
-
+  const [popupOpen, setPopupOpen] = useState(false);
+  
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    getNotice();
-    getLike();
+    if (!isLogin) {
+      setPopupOpen(true);
+    }else{
+      getNotice();
+      getLike();
+    }
   }, [noticeId]);
+
+  const handlePopupClose = () => {
+    navigate('/login')
+  };
 
   const getNotice = async () => {
     try {
@@ -232,6 +243,24 @@ export default function FilmoDetailPage({ openChatRoom, setIsChatRoomOpen, openC
 
         </Box>
       </Container>
+      <Dialog
+        open={popupOpen}
+        onClose={handlePopupClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          접근 실패
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            로그인 후 이용이 가능한 페이지입니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePopupClose}>로그인 하기</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
