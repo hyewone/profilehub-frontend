@@ -20,7 +20,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!isLogin) {
       setPopupOpen(true);
-    }else if(userInfo.memberType === "ACTOR"){
+    }else if(userInfo.memberType !== "ACTOR"){
       setPopupInfo({title: '접근 실패', content: '배우만 프로필 작성이 가능합니다.', button: '확인', redirect: '/'})
       setPopupOpen(true);
     }

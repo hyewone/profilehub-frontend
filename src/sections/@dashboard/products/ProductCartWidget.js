@@ -148,11 +148,11 @@ export default function CartWidget({ openChatRoom, setIsChatRoomOpen, openChat, 
   useEffect(() => {
     if (chatRoomInfo.id) {
       getChat();
+      setChats([]);
     }
   }, [chatRoomInfo]);
 
   const getChatRoom = () => {
-    console.log("getChatRoom")
     const token = getTokenToSessionStorage();
     const eventSource = new EventSource(`http://localhost:7003/v1/chat/rooms?token=${token}`,
       {

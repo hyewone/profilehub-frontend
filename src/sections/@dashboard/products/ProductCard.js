@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Iconify from '../../../components/iconify';
+import Label from '../../../components/label';
 // ----------------------------------------------------------------------
 
 const StyledProductImg = styled('img')({
   top: 0,
   width: '100%',
-  height: '100%',
+  height: '105%',
   objectFit: 'cover',
   position: 'absolute',
 });
@@ -41,10 +42,10 @@ export default function ShopProductCard({ profile }) {
   return (
     <Card onClick={() => handleCardClick(profileId)}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {/* {status && (
+         {likeCount > 5000 && ( 
           <Label
             variant="filled"
-            color={(status === 'hot' && 'error') || 'info'}
+            color="error"
             sx={{
               zIndex: 9,
               top: 16,
@@ -53,9 +54,9 @@ export default function ShopProductCard({ profile }) {
               textTransform: 'uppercase',
             }}
           >
-            {status}
+            hot
           </Label> 
-          )} */}
+          )} 
         <StyledProductImg alt={actorName} src={getDefaultImagePath(images)} />
       </Box>
 
